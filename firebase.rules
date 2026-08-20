@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Public read access for general site info
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /constitutionChapters/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /constitutionClauses/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /notices/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /activities/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /encouragement/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Strict admin access for financial & member details
+    match /members/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /fundTransactions/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /donations/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /expenses/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /arrears/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admins/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /auditLogs/{docId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false; // Audit logs are immutable
+    }
+  }
+}
