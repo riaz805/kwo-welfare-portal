@@ -25,7 +25,8 @@ import {
   UserX,
   CheckCircle2,
   PlusCircle,
-  AlertTriangle
+  AlertTriangle,
+  Megaphone
 } from "lucide-react";
 
 const ICON_MAP = {
@@ -50,7 +51,7 @@ const DEFAULT_SITE_CONFIG = {
   orgNameEnglish: "Koztiraj Welfare Organization",
   shortName: "KWO",
   homeHeading: "خوش آمدید",
-  homeSubheading: "فلاحی برادری کا باضابطہ ڈیجیٹل پورٹل - مالیات، ممبران اور ریکارڈ کا شفاف نظام۔",
+  homeSubheading: "فلاحی برادری کا باضابطہ ڈیجیٹل پورٹل - شفاف مالیات، عطیات اور اعلانات کا نظام۔",
   theme: {
     primary: "#0B4F3F",
     primaryDark: "#083B2F",
@@ -70,22 +71,26 @@ const DEFAULT_CARD_REGISTRY = [
   { id: "constitution", order: 1, visible: true, title: "دستور", text: "تنظیم کا آئین اور اصول", icon: "book" },
   { id: "members", order: 2, visible: true, title: "ممبران", text: "فعال اور غیر فعال ممبران", icon: "users" },
   { id: "funds", order: 3, visible: true, title: "فنڈز اور لیجر", text: "کل فنڈ اور بقایا جات کا حساب", icon: "wallet" },
-  { id: "expenses", order: 4, visible: true, title: "اخراجات", text: "کیٹیگری وائز خرچوں کی تفصیل", icon: "receipt" },
-  { id: "arrears", order: 5, visible: true, title: "بقایاجات", text: "واجب الادا فنڈز کی فہرست", icon: "alert" },
-  { id: "notices", order: 6, visible: true, title: "نوٹس بورڈ", text: "اعلانات اور نوٹیفیکیشنز", icon: "bell" },
-  { id: "volunteers", order: 7, visible: true, title: "رضاکار حضرات", text: "خدمات انجام دینے والے ساتھی", icon: "shield" },
-  { id: "contact", order: 8, visible: true, title: "رابطہ", text: "ہم سے رابطہ کریں", icon: "phone" },
+  { id: "donations", order: 4, visible: true, title: "عطیات کی تفصیل", text: "ماہانہ فنڈ سے زائد اور اضافی عطیات", icon: "heart" },
+  { id: "expenses", order: 5, visible: true, title: "اخراجات", text: "کیٹیگری وائز خرچوں کی تفصیل", icon: "receipt" },
+  { id: "arrears", order: 6, visible: true, title: "بقایاجات", text: "واجب الادا فنڈز اور سرخ نشان", icon: "alert" },
+  { id: "notices", order: 7, visible: true, title: "نوٹس بورڈ", text: "اہم اعلانات اور نوٹیفیکیشنز", icon: "bell" },
+  { id: "volunteers", order: 8, visible: true, title: "رضاکار حضرات", text: "خدمات انجام دینے والے ساتھی", icon: "shield" },
 ];
 
 const DEFAULT_MEMBERS = [
-  { id: "m-1", name: "عمران خان", phone: "0300-1234567", status: "active", hasArrears: false, totalPaid: 12000, donation: 5000 },
-  { id: "m-2", name: "علی احمد", phone: "0300-9876543", status: "active", hasArrears: true, totalPaid: 9000, donation: 0 },
-  { id: "m-3", name: "محمد بلال", phone: "0333-5554433", status: "inactive", hasArrears: false, totalPaid: 3000, donation: 2000 },
+  { id: "m-1", name: "عمران خان", phone: "0300-1234567", status: "active", hasArrears: false, monthlyPaid: 1500, extraDonation: 500 },
+  { id: "m-2", name: "علی احمد", phone: "0300-9876543", status: "active", hasArrears: true, monthlyPaid: 1000, extraDonation: 0 },
+  { id: "m-3", name: "محمد بلال", phone: "0333-5554433", status: "inactive", hasArrears: false, monthlyPaid: 1000, extraDonation: 1000 },
+];
+
+const DEFAULT_EXTERNAL_DONATIONS = [
+  { id: "ed-1", donorName: "حاجی عبدالرحمن (خیر خواہ)", amount: 10000, note: "مستحقین کے راشن کے لیے عطیہ", date: "2026-05-12" },
+  { id: "ed-2", donorName: "محمد فاروق (باہر مقیم)", amount: 5000, note: "تنظیم کے فلاحی کاموں میں معاونت", date: "2026-05-18" },
 ];
 
 const DEFAULT_EXPENSES = [
   { id: "e-1", category: "مستحقین کی امداد", amount: 15000, date: "2026-05-10", note: "بیوہ خاندان کو راشن" },
-  { id: "e-2", category: "دفتری اخراجات", amount: 2000, date: "2026-05-15", note: "سٹیشنری اور پرنٹنگ" },
 ];
 
 const DEFAULT_EXPENSE_CATEGORIES = ["مستحقین کی امداد", "دفتری اخراجات", "مرمت و مرمتی کام", "دیگر فلاحی مد"];
@@ -93,6 +98,11 @@ const DEFAULT_EXPENSE_CATEGORIES = ["مستحقین کی امداد", "دفتر�
 const DEFAULT_VOLUNTEERS = [
   { id: "v-1", name: "احمد علی", role: "نگرانِ مالیات و فنڈز", phone: "0300-1112233" },
   { id: "v-2", name: "قاسم رضا", role: "رضاکار و رابطہ کار", phone: "0321-4445566" },
+];
+
+const DEFAULT_NOTICES = [
+  { id: "n-1", title: "موجودہ ماہ کا فنڈ", text: "تمام اراکین سے گزارش ہے کہ وہ رواں ماہ کا فنڈ بروقت جمع کروائیں۔", date: "2026-05-20", active: true },
+  { id: "n-2", title: "نیا نوٹس / اعلان", text: "تنظیم کے نئے اجلاس کی تاریخ جلد مطلع کی جائے گی۔", date: "2026-05-21", active: true },
 ];
 
 const DEFAULT_CONSTITUTION = `1. تنظیم کا نام: کوزتیراج ویلفیئر آرگنائزیشن ہوگا۔
@@ -104,9 +114,11 @@ export default function App() {
   const [siteConfig, setSiteConfig] = useState(DEFAULT_SITE_CONFIG);
   const [cardRegistry, setCardRegistry] = useState(DEFAULT_CARD_REGISTRY);
   const [members, setMembers] = useState(DEFAULT_MEMBERS);
+  const [externalDonations, setExternalDonations] = useState(DEFAULT_EXTERNAL_DONATIONS);
   const [expenses, setExpenses] = useState(DEFAULT_EXPENSES);
   const [expenseCategories, setExpenseCategories] = useState(DEFAULT_EXPENSE_CATEGORIES);
   const [volunteers, setVolunteers] = useState(DEFAULT_VOLUNTEERS);
+  const [notices, setNotices] = useState(DEFAULT_NOTICES);
   const [constitutionText, setConstitutionText] = useState(DEFAULT_CONSTITUTION);
   const [monthlyFundAmount, setMonthlyFundAmount] = useState(1000);
 
@@ -114,9 +126,11 @@ export default function App() {
     setSiteConfig(next.siteConfig);
     setCardRegistry(next.cardRegistry);
     setMembers(next.members);
+    setExternalDonations(next.externalDonations);
     setExpenses(next.expenses);
     setExpenseCategories(next.expenseCategories);
     setVolunteers(next.volunteers);
+    setNotices(next.notices);
     setConstitutionText(next.constitutionText);
     setMonthlyFundAmount(next.monthlyFundAmount);
   }
@@ -126,9 +140,11 @@ export default function App() {
       siteConfig={siteConfig}
       cardRegistry={cardRegistry}
       members={members}
+      externalDonations={externalDonations}
       expenses={expenses}
       expenseCategories={expenseCategories}
       volunteers={volunteers}
+      notices={notices}
       constitutionText={constitutionText}
       monthlyFundAmount={monthlyFundAmount}
       onOpenAdmin={() => setView("admin")}
@@ -143,9 +159,11 @@ function HomePage({
   siteConfig,
   cardRegistry,
   members,
+  externalDonations,
   expenses,
   expenseCategories,
   volunteers,
+  notices,
   constitutionText,
   monthlyFundAmount,
   onOpenAdmin,
@@ -153,13 +171,15 @@ function HomePage({
   onCloseAdmin,
   onApplyChanges,
 }) {
-  const [activeModal, setActiveModal] = useState(null); // 'members' | 'constitution' | 'funds' | 'expenses' | 'arrears' | 'volunteers'
+  const [activeModal, setActiveModal] = useState(null); 
   
   // Admin Draft States
   const [draftMembers, setDraftMembers] = useState(members);
+  const [draftExtDonations, setDraftExtDonations] = useState(externalDonations);
   const [draftExpenses, setDraftExpenses] = useState(expenses);
   const [draftCategories, setDraftCategories] = useState(expenseCategories);
   const [draftVolunteers, setDraftVolunteers] = useState(volunteers);
+  const [draftNotices, setDraftNotices] = useState(notices);
   const [draftConstitution, setDraftConstitution] = useState(constitutionText);
   const [draftFundAmount, setDraftFundAmount] = useState(monthlyFundAmount);
   const [savedFlash, setSavedFlash] = useState(false);
@@ -167,30 +187,45 @@ function HomePage({
   // New Form states inside Admin
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
-  const [newDonation, setNewDonation] = useState("");
-  
+  const [newMonthlyPaid, setNewMonthlyPaid] = useState(monthlyFundAmount);
+  const [newExtraDonation, setNewExtraDonation] = useState("");
+
+  const [extDonorName, setExtDonorName] = useState("");
+  const [extAmount, setExtAmount] = useState("");
+  const [extNote, setExtNote] = useState("");
+
   const [expCategory, setExpCategory] = useState(expenseCategories[0]);
   const [expAmount, setExpAmount] = useState("");
   const [expNote, setExpNote] = useState("");
   const [newCatName, setNewCatName] = useState("");
 
+  const [noticeTitle, setNoticeTitle] = useState("");
+  const [noticeText, setNoticeText] = useState("");
+
   const theme = siteConfig.theme;
   const visibleCards = [...cardRegistry].filter((c) => c.visible).sort((a, b) => a.order - b.order);
 
   // Financial calculations from inception
-  const totalFundCollected = members.reduce((sum, m) => sum + (Number(m.totalPaid) || 0) + (Number(m.donation) || 0), 0);
+  const totalMemberFunds = members.reduce((sum, m) => sum + (Number(m.monthlyPaid) || 0), 0);
+  const totalMemberExtraDonations = members.reduce((sum, m) => sum + (Number(m.extraDonation) || 0), 0);
+  const totalExternalDonations = externalDonations.reduce((sum, ed) => sum + (Number(ed.amount) || 0), 0);
+  const totalFundCollected = totalMemberFunds + totalMemberExtraDonations + totalExternalDonations;
+
   const totalExpensesAmount = expenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
   const netRemainingFund = totalFundCollected - totalExpensesAmount;
   const arrearsMembers = members.filter((m) => m.hasArrears);
+  const activeNotices = notices.filter((n) => n.active);
 
   function handleSaveAll() {
     onApplyChanges({
       siteConfig,
       cardRegistry,
       members: draftMembers,
+      externalDonations: draftExtDonations,
       expenses: draftExpenses,
       expenseCategories: draftCategories,
       volunteers: draftVolunteers,
+      notices: draftNotices,
       constitutionText: draftConstitution,
       monthlyFundAmount: draftFundAmount,
     });
@@ -214,9 +249,9 @@ function HomePage({
           
           {/* MEMBERS & ARREARS ADMIN */}
           <section style={{ background: "#FFFFFF", border: `1px solid ${theme.border}`, borderRadius: 16, padding: 18 }}>
-            <h2 style={{ color: theme.primary, fontSize: "1.1rem", margin: "0 0 12px" }}>ممبران کی انٹری، پروفائل اور بقایاجات (سرخ نشان کنٹرول)</h2>
+            <h2 style={{ color: theme.primary, fontSize: "1.1rem", margin: "0 0 12px" }}>ممبران، ماہانہ فنڈ اور اضافی عطیات کی انٹری</h2>
             
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr auto", gap: 8, marginBottom: 16, alignItems: "end" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr auto", gap: 8, marginBottom: 16, alignItems: "end" }}>
               <div>
                 <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>نام</label>
                 <input placeholder="مثلاً: عمران" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={newName} onChange={(e) => setNewName(e.target.value)} />
@@ -226,13 +261,17 @@ function HomePage({
                 <input placeholder="0300-XXXXXXX" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={newPhone} onChange={(e) => setNewPhone(e.target.value)} />
               </div>
               <div>
-                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>عطیہ / فنڈ</label>
-                <input type="number" placeholder="0" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={newDonation} onChange={(e) => setNewDonation(e.target.value)} />
+                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>ماہانہ فنڈ</label>
+                <input type="number" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={newMonthlyPaid} onChange={(e) => setNewMonthlyPaid(e.target.value)} />
+              </div>
+              <div>
+                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>اضافی عطیہ</label>
+                <input type="number" placeholder="0" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={newExtraDonation} onChange={(e) => setNewExtraDonation(e.target.value)} />
               </div>
               <button onClick={() => {
                 if (!newName.trim()) return;
-                setDraftMembers([...draftMembers, { id: `m-${Date.now()}`, name: newName, phone: newPhone || "-", status: "active", hasArrears: false, totalPaid: draftFundAmount, donation: Number(newDonation) || 0 }]);
-                setNewName(""); setNewPhone(""); setNewDonation("");
+                setDraftMembers([...draftMembers, { id: `m-${Date.now()}`, name: newName, phone: newPhone || "-", status: "active", hasArrears: false, monthlyPaid: Number(newMonthlyPaid) || draftFundAmount, extraDonation: Number(newExtraDonation) || 0 }]);
+                setNewName(""); setNewPhone(""); setNewExtraDonation("");
               }} style={{ background: theme.primary, color: "#fff", border: "none", borderRadius: 8, padding: "9px 14px", cursor: "pointer", display: "flex", gap: 4, alignItems: "center", height: 38 }}>
                 <UserPlus size={15} /> ممبر شامل کریں
               </button>
@@ -245,7 +284,7 @@ function HomePage({
                     {m.hasArrears && <span title="فنڈ بقایا ہے" style={{ width: 10, height: 10, borderRadius: "50%", background: "red", display: "inline-block" }}></span>}
                     <div>
                       <strong>{m.name}</strong> <span style={{ fontSize: "0.8rem", color: theme.textMuted }}>({m.phone})</span>
-                      <div style={{ fontSize: "0.75rem", color: theme.textMuted }}>کل فنڈ: {m.totalPaid} روپیہ | عطیہ: {m.donation} روپیہ</div>
+                      <div style={{ fontSize: "0.75rem", color: theme.textMuted }}>فنڈ: {m.monthlyPaid} روپیہ {m.extraDonation > 0 ? `| اضافی عطیہ: ${m.extraDonation} روپیہ` : ""}</div>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -264,49 +303,72 @@ function HomePage({
             </div>
           </section>
 
-          {/* EXPENSES & CATEGORIES ADMIN */}
+          {/* EXTERNAL DONATIONS ADMIN */}
           <section style={{ background: "#FFFFFF", border: `1px solid ${theme.border}`, borderRadius: 16, padding: 18 }}>
-            <h2 style={{ color: theme.primary, fontSize: "1.1rem", margin: "0 0 12px" }}>اخراجات اور کیٹیگریز کا انتظام</h2>
+            <h2 style={{ color: theme.primary, fontSize: "1.1rem", margin: "0 0 12px" }}>کارکنان کے علاوہ دیگر افراد کے عطیات کی انٹری</h2>
             
-            <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
-              <input placeholder="نئی کیٹیگری کا نام (مثلاً بجلی کا بل)" style={{ flex: 1, padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={newCatName} onChange={(e) => setNewCatName(e.target.value)} />
-              <button onClick={() => {
-                if (!newCatName.trim()) return;
-                setDraftCategories([...draftCategories, newCatName]);
-                setNewCatName("");
-              }} style={{ background: theme.accent, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", cursor: "pointer" }}>کیٹیگری بنائیں</button>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 2fr auto", gap: 8, marginBottom: 14, alignItems: "end" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr auto", gap: 8, marginBottom: 14, alignItems: "end" }}>
               <div>
-                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>مد / کیٹیگری</label>
-                <select style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={expCategory} onChange={(e) => setExpCategory(e.target.value)}>
-                  {draftCategories.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
+                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>عطیہ دہندہ کا نام</label>
+                <input placeholder="نام یا مخیر حضرات" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={extDonorName} onChange={(e) => setExtDonorName(e.target.value)} />
               </div>
               <div>
                 <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>رقم</label>
-                <input type="number" placeholder="رقم" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={expAmount} onChange={(e) => setExpAmount(e.target.value)} />
+                <input type="number" placeholder="رقم" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={extAmount} onChange={(e) => setExtAmount(e.target.value)} />
               </div>
               <div>
-                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>تفصیل / نوٹ</label>
-                <input placeholder="تفصیل لکھیں" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={expNote} onChange={(e) => setExpNote(e.target.value)} />
+                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>تفصیل / وضاحت</label>
+                <input placeholder="مد یا پیغام" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={extNote} onChange={(e) => setExtNote(e.target.value)} />
               </div>
               <button onClick={() => {
-                if (!expAmount) return;
-                setDraftExpenses([...draftExpenses, { id: `e-${Date.now()}`, category: expCategory, amount: Number(expAmount), date: new Date().toISOString().split("T")[0], note: expNote }]);
-                setExpAmount(""); setExpNote("");
-              }} style={{ background: theme.primary, color: "#fff", border: "none", borderRadius: 8, padding: "9px 14px", cursor: "pointer", height: 38 }}>خرچہ درج کریں</button>
+                if (!extDonorName || !extAmount) return;
+                setDraftExtDonations([...draftExtDonations, { id: `ed-${Date.now()}`, donorName: extDonorName, amount: Number(extAmount), note: extNote, date: new Date().toISOString().split("T")[0] }]);
+                setExtDonorName(""); setExtAmount(""); setExtNote("");
+              }} style={{ background: theme.primary, color: "#fff", border: "none", borderRadius: 8, padding: "9px 14px", cursor: "pointer", height: 38 }}>عطیہ درج کریں</button>
             </div>
 
             <div style={{ display: "grid", gap: 8 }}>
-              {draftExpenses.map((ex) => (
-                <div key={ex.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 10, background: "#FDFCF9", border: `1px solid ${theme.border}`, borderRadius: 10 }}>
+              {draftExtDonations.map((ed) => (
+                <div key={ed.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 10, background: "#FDFCF9", border: `1px solid ${theme.border}`, borderRadius: 10 }}>
                   <div>
-                    <span style={{ fontWeight: 700, color: theme.primary }}>[{ex.category}]</span> {ex.note} ({ex.date})
-                    <div style={{ fontSize: "0.8rem", color: "darkred" }}>رقم: {ex.amount} روپیہ</div>
+                    <strong>{ed.donorName}</strong> <span style={{ fontSize: "0.8rem", color: theme.textMuted }}>({ed.note})</span>
+                    <div style={{ fontSize: "0.75rem", color: theme.primary }}>رقم: {ed.amount} روپیہ | تاریخ: {ed.date}</div>
                   </div>
-                  <button onClick={() => setDraftExpenses(draftExpenses.filter(item => item.id !== ex.id))} style={{ background: "rgba(200,0,0,0.1)", color: "darkred", border: "none", borderRadius: 6, padding: 6, cursor: "pointer" }}>
+                  <button onClick={() => setDraftExtDonations(draftExtDonations.filter(item => item.id !== ed.id))} style={{ background: "rgba(200,0,0,0.1)", color: "darkred", border: "none", borderRadius: 6, padding: 6, cursor: "pointer" }}>
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* NOTICES ADMIN */}
+          <section style={{ background: "#FFFFFF", border: `1px solid ${theme.border}`, borderRadius: 16, padding: 18 }}>
+            <h2 style={{ color: theme.primary, fontSize: "1.1rem", margin: "0 0 12px" }}>نوٹس بورڈ اور اعلانات جاری کریں</h2>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr auto", gap: 8, marginBottom: 14, alignItems: "end" }}>
+              <div>
+                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>نوٹس کا عنوان</label>
+                <input placeholder="عنوان" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={noticeTitle} onChange={(e) => setNoticeTitle(e.target.value)} />
+              </div>
+              <div>
+                <label style={{ fontSize: "0.78rem", display: "block", marginBottom: 4 }}>تفصیل / متن</label>
+                <input placeholder="نوٹس کا تفصیلی متن" style={{ width: "100%", padding: 8, borderRadius: 8, border: `1px solid ${theme.border}` }} value={noticeText} onChange={(e) => setNoticeText(e.target.value)} />
+              </div>
+              <button onClick={() => {
+                if (!noticeTitle.trim()) return;
+                setDraftNotices([...draftNotices, { id: `n-${Date.now()}`, title: noticeTitle, text: noticeText, date: new Date().toISOString().split("T")[0], active: true }]);
+                setNoticeTitle(""); setNoticeText("");
+              }} style={{ background: theme.accent, color: "#fff", border: "none", borderRadius: 8, padding: "9px 14px", cursor: "pointer", height: 38 }}>نوٹس جاری کریں</button>
+            </div>
+
+            <div style={{ display: "grid", gap: 8 }}>
+              {draftNotices.map((n) => (
+                <div key={n.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 10, background: "#FDFCF9", border: `1px solid ${theme.border}`, borderRadius: 10 }}>
+                  <div>
+                    <strong>{n.title}</strong>: {n.text}
+                  </div>
+                  <button onClick={() => setDraftNotices(draftNotices.filter(item => item.id !== n.id))} style={{ background: "rgba(200,0,0,0.1)", color: "darkred", border: "none", borderRadius: 6, padding: 6, cursor: "pointer" }}>
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -317,7 +379,7 @@ function HomePage({
           {/* CONSTITUTION EDIT */}
           <section style={{ background: "#FFFFFF", border: `1px solid ${theme.border}`, borderRadius: 16, padding: 18 }}>
             <h2 style={{ color: theme.primary, fontSize: "1.1rem", margin: "0 0 12px" }}>دستور میں ترمیم</h2>
-            <textarea rows={5} style={{ width: "100%", padding: 10, borderRadius: 8, border: `1px solid ${theme.border}`, fontFamily: "inherit" }} value={draftConstitution} onChange={(e) => setDraftConstitution(e.target.value)} />
+            <textarea rows={4} style={{ width: "100%", padding: 10, borderRadius: 8, border: `1px solid ${theme.border}`, fontFamily: "inherit" }} value={draftConstitution} onChange={(e) => setDraftConstitution(e.target.value)} />
           </section>
         </main>
 
@@ -360,7 +422,9 @@ function HomePage({
         }
         .kw-card:hover { transform: translateY(-3px); box-shadow: 0 12px 22px rgba(11, 79, 63, 0.16); }
         .blink-badge { animation: blink 1.2s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
+        .blink-bar { animation: blinkBar 1.5s infinite; }
+        @keyframes blinkBar { 0% { background-color: #B8862B; } 50% { background-color: #0B4F3F; } 100% { background-color: #B8862B; } }
       `}</style>
 
       {/* HEADER */}
@@ -377,11 +441,18 @@ function HomePage({
           </div>
           {arrearsMembers.length > 0 && (
             <div className="blink-badge" style={{ background: "#FF4D4D", color: "#fff", padding: "4px 10px", borderRadius: 99, fontSize: "0.75rem", display: "flex", gap: 4, alignItems: "center" }}>
-              <AlertTriangle size={14} /> بقایاجات موجود ہیں!
+              <AlertTriangle size={14} /> بقایاجات موجود!
             </div>
           )}
         </div>
       </header>
+
+      {/* BLINKING NOTIFICATION BAR */}
+      {activeNotices.length > 0 && (
+        <div className="blink-bar" onClick={() => setActiveModal("notices")} style={{ color: "#fff", padding: "8px 16px", textAlign: "center", fontSize: "0.85rem", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: 8 }}>
+          <Megaphone size={16} /> <strong>نیا اعلان:</strong> {activeNotices[0].title} — تفصیل دیکھنے کے لیے یہاں کلک کریں!
+        </div>
+      )}
 
       {/* MAIN */}
       <main style={{ maxWidth: 1120, margin: "0 auto", padding: "36px 18px 90px" }}>
@@ -393,7 +464,7 @@ function HomePage({
         {/* FINANCIAL OVERVIEW BANNER */}
         <section style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 16, padding: 20, marginBottom: 24, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, textAlign: "center" }}>
           <div style={{ padding: 10, background: theme.backgroundAlt, borderRadius: 12 }}>
-            <span style={{ fontSize: "0.8rem", color: theme.textMuted, display: "block" }}>ابتدا سے کل فنڈ</span>
+            <span style={{ fontSize: "0.8rem", color: theme.textMuted, display: "block" }}>ابتدا سے کل فنڈ + عطیات</span>
             <strong style={{ fontSize: "1.25rem", color: theme.primary }}>{totalFundCollected} روپیہ</strong>
           </div>
           <div style={{ padding: 10, background: theme.backgroundAlt, borderRadius: 12 }}>
@@ -430,6 +501,9 @@ function HomePage({
                 {card.id === "arrears" && arrearsMembers.length > 0 && (
                   <span className="blink-badge" style={{ position: "absolute", top: 12, left: 12, width: 10, height: 10, borderRadius: "50%", background: "red" }}></span>
                 )}
+                {card.id === "notices" && activeNotices.length > 0 && (
+                  <span className="blink-badge" style={{ position: "absolute", top: 12, left: 12, width: 10, height: 10, borderRadius: "50%", background: theme.accent }}></span>
+                )}
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ width: 38, height: 38, borderRadius: 10, background: "rgba(11,79,63,0.08)", display: "flex", alignItems: "center", justifyContent: "center", color: theme.primary }}>
                     <Icon size={19} />
@@ -443,7 +517,7 @@ function HomePage({
         </section>
       </main>
 
-      {/* MODALS FOR EACH SECTION */}
+      {/* MODALS */}
       {activeModal && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
           <div style={{ background: theme.surface, borderRadius: 16, width: "100%", maxWidth: 640, maxHeight: "85vh", overflowY: "auto", padding: 22, border: `1px solid ${theme.border}` }}>
@@ -453,10 +527,11 @@ function HomePage({
                 {activeModal === "constitution" && "تنظیم کا دستور"}
                 {activeModal === "members" && "ممبران کی فہرست"}
                 {activeModal === "funds" && "فنڈز اور مالیاتی لیجر"}
+                {activeModal === "donations" && "عطیات کا تفصیلی صفحہ"}
                 {activeModal === "expenses" && "کیٹیگری وائز اخراجات"}
                 {activeModal === "arrears" && "بقایاجات کی فہرست"}
                 {activeModal === "volunteers" && "رضاکار حضرات"}
-                {activeModal === "notices" && "نوٹس بورڈ"}
+                {activeModal === "notices" && "نوٹس بورڈ اور اعلانات"}
               </h3>
               <button onClick={() => setActiveModal(null)} style={{ background: "transparent", border: "none", cursor: "pointer", color: theme.textStrong }}><X size={22} /></button>
             </div>
@@ -475,7 +550,7 @@ function HomePage({
                       {m.hasArrears && <span title="بقیہ فنڈ موجود ہے" style={{ width: 10, height: 10, borderRadius: "50%", background: "red" }}></span>}
                       <div>
                         <h4 style={{ margin: "0 0 4px", fontSize: "1rem" }}>{m.name}</h4>
-                        <span style={{ fontSize: "0.8rem", color: theme.textMuted }}>فون: {m.phone} | کل فنڈ: {m.totalPaid} روپیہ | عطیہ: {m.donation} روپیہ</span>
+                        <span style={{ fontSize: "0.8rem", color: theme.textMuted }}>فون: {m.phone} | فنڈ: {m.monthlyPaid} روپیہ {m.extraDonation > 0 ? `| اضافی عطیہ: ${m.extraDonation} روپیہ` : ""}</span>
                       </div>
                     </div>
                     <span style={{ fontSize: "0.75rem", padding: "4px 10px", borderRadius: 999, background: m.status === "active" ? "#E7EFE9" : "#F4E9D2", color: m.status === "active" ? theme.primary : theme.accent }}>
@@ -501,6 +576,40 @@ function HomePage({
                   <div style={{ padding: 12, background: theme.primarySoft, borderRadius: 8, display: "flex", justifyContent: "space-between" }}>
                     <span style={{ color: theme.primary }}>موجودہ بقایا فنڈ:</span>
                     <strong style={{ color: theme.primary }}>{netRemainingFund} روپیہ</strong>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeModal === "donations" && (
+              <div style={{ display: "grid", gap: 16 }}>
+                <div>
+                  <h4 style={{ color: theme.primary, margin: "0 0 8px", fontSize: "1.05rem" }}>ارکان کی طرف سے دی جانے والی اضافی رقوم (عطیات):</h4>
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {members.filter(m => m.extraDonation > 0).length === 0 ? (
+                      <p style={{ fontSize: "0.85rem", color: theme.textMuted }}>کوئی اضافی عطیہ درج نہیں ہے۔</p>
+                    ) : (
+                      members.filter(m => m.extraDonation > 0).map(m => (
+                        <div key={m.id} style={{ padding: 10, background: theme.backgroundAlt, borderRadius: 8, display: "flex", justifyContent: "space-between" }}>
+                          <span>{m.name} (ماہانہ فنڈ سے زائد)</span>
+                          <strong style={{ color: theme.primary }}>{m.extraDonation} روپیہ</strong>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 style={{ color: theme.primary, margin: "0 0 8px", fontSize: "1.05rem" }}>کارکنان کے علاوہ مخیر حضرات و رضاکاروں کے عطیات:</h4>
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {externalDonations.map(ed => (
+                      <div key={ed.id} style={{ padding: 10, background: theme.backgroundAlt, borderRadius: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div>
+                          <strong>{ed.donorName}</strong> <span style={{ fontSize: "0.8rem", color: theme.textMuted }}>({ed.note})</span>
+                        </div>
+                        <strong style={{ color: theme.primary }}>{ed.amount} روپیہ</strong>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -552,9 +661,13 @@ function HomePage({
             )}
 
             {activeModal === "notices" && (
-              <div style={{ padding: 16, background: theme.backgroundAlt, borderRadius: 10 }}>
-                <h4 style={{ margin: "0 0 8px", color: theme.primary }}>اہم اعلانات</h4>
-                <p style={{ fontSize: "0.9rem", margin: 0 }}>موجودہ ماہ کا فنڈ بروقت جمع کروانے کی آخری تاریخ قریب ہے۔ تمام ممبران سے تعاون کی اپیل ہے۔</p>
+              <div style={{ display: "grid", gap: 10 }}>
+                {notices.map((n) => (
+                  <div key={n.id} style={{ padding: 12, background: theme.backgroundAlt, borderRadius: 10, borderRight: `4px solid ${theme.accent}` }}>
+                    <h4 style={{ margin: "0 0 4px", color: theme.primary }}>{n.title} <span style={{ fontSize: "0.7rem", color: theme.textMuted, fontWeight: 400 }}>({n.date})</span></h4>
+                    <p style={{ fontSize: "0.9rem", margin: 0 }}>{n.text}</p>
+                  </div>
+                ))}
               </div>
             )}
 
